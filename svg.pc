@@ -1,0 +1,11 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: dedup
+Description: A simple library for manipulating XML documents
+URL: NONE
+Version: 1.0.0
+Libs: -L${exec_prefix}/lib -lxml
+Cflags: -I${prefix}/include

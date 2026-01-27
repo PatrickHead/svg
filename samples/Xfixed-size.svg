@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><path d="M3,20 V3 H20 M3,3 L20,20" id="ne"/><path d="M97,20 V3 H80 M97,3 L80,20" id="nw"/><path d="M97,80 V97 H80 M97,97 L80,80" id="sw"/><path d="M3,80 V97 H20 M3,97 L20,80" id="se"/><circle r="25" cx="50" cy="50"/></svg>
