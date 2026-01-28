@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.71])
-AC_INIT([svg], [1.0.0], [patrickhead@gmail.com])
+AC_INIT([svg], [1.1.0], [patrickhead@gmail.com])
 AC_CONFIG_MACRO_DIR([.])
 AC_CONFIG_AUX_DIR(tools)
 AC_CONFIG_SRCDIR([src/svg.c])
