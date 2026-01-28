@@ -1,5 +1,5 @@
 /*
- *  Copyright 2024 Patrick T. Head
+ *  Copyright 2024,2026 Patrick T. Head
  *
  *  This program is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU Lesser General Public License as published by the
@@ -44,6 +44,7 @@ typedef enum
   svg_element_type_link,      /**< SVG link element type     */
   svg_element_type_image,     /**< SVG image element type    */
   svg_element_type_marker,    /**< SVG marker element type   */
+  svg_element_type_group,    /**< SVG group element type   */
 } svg_element_type;
 
   /**
@@ -296,21 +297,21 @@ typedef struct svg_style svg_style;
 
 struct svg_style
 {
-  char *fill;                                /**< see SVG reference for details */
-  double fill_opacity;                       /**< see SVG reference for details */
-  svg_fill_rule_type fill_rule;              /**< see SVG reference for details */
-  char *stroke;                              /**< see SVG reference for details */
-  double stroke_width;                       /**< see SVG reference for details */
-  double stroke_opacity;                     /**< see SVG reference for details */
-  svg_stroke_linecap_type stroke_linecap;    /**< see SVG reference for details */
-  char *stroke_dash_array;                   /**< see SVG reference for details */
-  svg_stroke_linejoin_type stroke_linejoin;  /**< see SVG reference for details */
-  char *background_color;                    /**< see SVG reference for details */
-  char *font_family;                         /**< see SVG reference for details */
-  svg_font_weight_type font_weight;          /**< see SVG reference for details */
-  svg_font_stretch_type font_stretch;        /**< see SVG reference for details */
-  svg_font_style_type font_style;            /**< see SVG reference for details */
-  char *font_size;                           /**< see SVG reference for details */
+  char *fill;                                /**< see SVG ref. for details */
+  double fill_opacity;                       /**< see SVG ref. for details */
+  svg_fill_rule_type fill_rule;              /**< see SVG ref. for details */
+  char *stroke;                              /**< see SVG ref. for details */
+  double stroke_width;                       /**< see SVG ref. for details */
+  double stroke_opacity;                     /**< see SVG ref. for details */
+  svg_stroke_linecap_type stroke_linecap;    /**< see SVG ref. for details */
+  char *stroke_dash_array;                   /**< see SVG ref. for details */
+  svg_stroke_linejoin_type stroke_linejoin;  /**< see SVG ref. for details */
+  char *background_color;                    /**< see SVG ref. for details */
+  char *font_family;                         /**< see SVG ref. for details */
+  svg_font_weight_type font_weight;          /**< see SVG ref. for details */
+  svg_font_stretch_type font_stretch;        /**< see SVG ref. for details */
+  svg_font_style_type font_style;            /**< see SVG ref. for details */
+  char *font_size;                           /**< see SVG ref. for details */
 };
 
   /**
@@ -518,14 +519,14 @@ typedef struct svg_link svg_link;
 
 struct svg_link
 {
-  char *href;             /**< URL of link                                               */
-  char *download;         /**< value of download attribute, NULL is false, empty is true */
-  char *hreflang;         /**< language of page in URL                                   */
-  char *referrer_policy;  /**< the referrer to send when fetching URL                    */
-  char *rel;              /**< target-link relationship                                  */
-  char *target;           /**< _self, _parent, _top, _blank, or any name                 */
-  char *type;             /**< MIME type of href link                                    */
-  svg_elements *els;      /**< list of elements that define visual link                  */
+  char *href;             /**< URL of link                                    */
+  char *download;         /**< download attribute, NULL = false, empty = true */
+  char *hreflang;         /**< language of page in URL                        */
+  char *referrer_policy;  /**< the referrer to send when fetching URL         */
+  char *rel;              /**< target-link relationship                       */
+  char *target;           /**< _self, _parent, _top, _blank, or any name      */
+  char *type;             /**< MIME type of href link                         */
+  svg_elements *els;      /**< list of elements that define visual link       */
 };
 
   /**
@@ -728,6 +729,23 @@ struct svg_transforms
 };
 
   /**
+   *  @typedef svg_group
+   *  @brief creates type for struct svg_group
+   */
+
+typedef struct svg_group svg_group;
+
+  /**
+   *  @struct svg_group
+   *  @brief contains data that defines an SVG group
+   */
+
+struct svg_group
+{
+  svg_elements *els;  /**<  list of elements contained in group */
+};
+
+  /**
    *  @typedef svg_element
    *  @brief creates type for struct svg_element
    */
@@ -741,27 +759,28 @@ typedef struct svg_element svg_element;
 
 struct svg_element
 {
-  svg_element_type type;       /**< type of element                              */
+  svg_element_type type;       /**< type of element  */
   union
   {
-    void *any;                 /**< generic pointer when the type doesn't matter */
-    svg_rect *r;               /**< SVG rect data                                */
-    svg_circle *c;             /**< SVG circle data                              */
-    svg_ellipse *e;            /**< SVG ellipse data                             */
-    svg_line *l;               /**< SVG line data                                */
-    svg_polygon *pg;           /**< SVG polygon data                             */
-    svg_polyline *pl;          /**< SVG polyline data                            */
-    svg_path *ph;              /**< SVG path data                                */
-    svg_text *t;               /**< SVG text data                                */
-    svg_textpath *tp;          /**< SVG textpath data                            */
-    svg_link *lnk;             /**< SVG link data                                */
-    svg_image *img;            /**< SVG image data                               */
-    svg_marker *m;             /**< SVG marker data                              */
+    void *any;                 /**< generic pointer for any type */
+    svg_rect *r;               /**< SVG rect data  */
+    svg_circle *c;             /**< SVG circle data  */
+    svg_ellipse *e;            /**< SVG ellipse data  */
+    svg_line *l;               /**< SVG line data  */
+    svg_polygon *pg;           /**< SVG polygon data  */
+    svg_polyline *pl;          /**< SVG polyline data  */
+    svg_path *ph;              /**< SVG path data  */
+    svg_text *t;               /**< SVG text data  */
+    svg_textpath *tp;          /**< SVG textpath data  */
+    svg_link *lnk;             /**< SVG link data  */
+    svg_image *img;            /**< SVG image data  */
+    svg_marker *m;             /**< SVG marker data  */
+    svg_group *g;              /**< SVG group data  */
   };
-  char *id;                    /**< id attribute for SVG element                 */
-  char *class;                 /**< class attribute for SVG element              */
-  svg_style *style;            /**< SVG style applied to element                 */
-  svg_transforms *transforms;  /**< SVG transforms applied to element            */
+  char *id;                    /**< id attribute for SVG element  */
+  char *class;                 /**< class attribute for SVG element  */
+  svg_style *style;            /**< SVG style applied to element  */
+  svg_transforms *transforms;  /**< SVG transforms applied to element  */
 };
 
   /**
@@ -771,9 +790,9 @@ struct svg_element
 
 struct svg_elements
 {
-  int size;           /**< count of elements in list                                                        */
-  int cursor;         /**< current element for @a svg_elements_next and @a svg_elementss_previous functions */
-  svg_element **arr;  /**< array of @a svg_element                                                          */
+  int size;           /**< count of elements in list  */
+  int cursor;         /**< current element for next and previous functions */
+  svg_element **arr;  /**< array of @a svg_element  */
 };
 
   /**
@@ -1214,6 +1233,20 @@ void svg_marker_set_orient(svg_marker *m, svg_orient *orient);
 
 svg_elements *svg_marker_get_elements(svg_marker *m);
 void svg_marker_set_elements(svg_marker *m, svg_elements *ses);
+
+    /*
+     *  svg_group
+     */
+
+svg_group *svg_group_new(void);
+svg_group *svg_group_dup(svg_group *m);
+void svg_group_free(svg_group *m);
+
+svg_elements *svg_group_get_elements(svg_group *m);
+void svg_group_set_elements(svg_group *m, svg_elements *ses);
+
+void svg_group_add(svg_group *g, svg_element *el);
+void svg_group_remove(svg_group *g, int index);
 
     /*
      *  svg_transform and sub types

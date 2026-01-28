@@ -4,7 +4,7 @@ A C language library primarily designed for creating and editing SVG documents p
 
 While aiming to provide a full featured API supporting all elements and attributes of SVG, no attempt is made to be fully compliant with W3C standards.
 
-As of 1/7/2025, not all features and elements are fully supported.  Most specifically SVG elements \<defs\> and \<g\> are not yet supported.  Many, if not most, experimental and newer elements may not be supported.
+As of 1/28/2026, not all features and elements are fully supported.  Most specifically SVG element \<defs\> is not yet supported.  Many, if not most, experimental and newer elements may not be supported.
 
 NOTE:  As of 2/20/2025, there is no reference code for creating an SVG document programmatically.
 <a id="TOC"></a>

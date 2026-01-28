@@ -1,5 +1,5 @@
 /*
- *  Copyright 2024 Patrick T. Head
+ *  Copyright 2024,2026 Patrick T. Head
  *
  *  This program is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU Lesser General Public License as published by the
@@ -44,6 +44,7 @@ static xml_element *textpath_to_xml(svg_element *el);
 static xml_element *link_to_xml(svg_element *el);
 static xml_element *image_to_xml(svg_element *el);
 static xml_element *marker_to_xml(svg_element *el);
+static xml_element *group_to_xml(svg_element *el);
 static char *transform_matrix_to_xml(svg_transform_matrix *stm);
 static char *transform_translate_to_xml(svg_transform_translate *stt);
 static char *transform_scale_to_xml(svg_transform_scale *sts);
@@ -75,6 +76,7 @@ static svg_element *parse_textpath(xml_element *e);
 static svg_element *parse_link(xml_element *e);
 static svg_element *parse_image(xml_element *e);
 static svg_element *parse_marker(xml_element *e);
+static svg_element *parse_group(xml_element *e);
 static svg_points *parse_points(char *s);
 static svg_text_length *parse_text_length(char *s);
 static svg_length_adjust_type parse_length_adjust(char *s);
@@ -868,6 +870,7 @@ void svg_element_set_element(svg_element *el, svg_element_type type, void *ele)
     case svg_element_type_link: svg_link_free(el->lnk); break;
     case svg_element_type_image: svg_image_free(el->img); break;
     case svg_element_type_marker: svg_marker_free(el->m); break;
+    case svg_element_type_group: svg_group_free(el->g); break;
 
     case svg_element_type_none:
     default:
@@ -890,6 +893,7 @@ void svg_element_set_element(svg_element *el, svg_element_type type, void *ele)
     case svg_element_type_link: el->any = svg_link_dup(ele); break;
     case svg_element_type_image: el->any = svg_image_dup(ele); break;
     case svg_element_type_marker: el->any = svg_marker_dup(ele); break;
+    case svg_element_type_group: el->any = svg_group_dup(ele); break;
 
     case svg_element_type_none:
     default:
@@ -4109,6 +4113,145 @@ void svg_marker_set_elements(svg_marker *m, svg_elements *ses)
 }
 
   /*
+   *  group
+   */
+
+  /**
+   * @fn svg_group *svg_group_new(void)
+   *
+   * @brief creates a new @a svg_group struct
+   *
+   * @par Parameters
+   *   None.
+   *
+   * @return pointer to @a svg_group struct
+   */
+
+svg_group *svg_group_new(void)
+{
+  svg_group *g = (svg_group *)malloc(sizeof(svg_group));
+  if (g) memset(g, 0, sizeof(svg_group));
+  return g;
+}
+
+  /**
+   * @fn svg_group *svg_group_dup(svg_group *g)
+   *
+   * @brief copies contents of @p g to new @a svg_group struct
+   *
+   * @param g - pointer to existing @a svg_group struct
+   *
+   * @return pointer to new @a svg_group struct
+   */
+
+svg_group *svg_group_dup(svg_group *g)
+{
+  svg_group *ng;
+
+  if (!g) return NULL;
+
+  ng = svg_group_new();
+  if (!ng) return NULL;
+
+  memcpy(ng, g, sizeof(svg_group));
+
+  if (g->els) ng->els = svg_elements_dup(g->els);
+
+  return ng;
+}
+
+  /**
+   * @fn void svg_group_free(svg_group *g)
+   *
+   * @brief frees all memory associated with @p g
+   *
+   * @param g - pointer to existing @a svg_group struct
+   *
+   * @par Returns
+   *   Nothing.
+   */
+
+void svg_group_free(svg_group *g)
+{
+  if (g && g->els) svg_elements_free(g->els);
+  if (g) free(g);
+}
+
+  /**
+   * @fn svg_group_elements svg_group_get_elements(svg_group *g)
+   *
+   * @brief returns elements of group @p g
+   *
+   * @param g - pointer to existing @a svg_group struct
+   *
+   * @return pointer to @a svg_elements
+   */
+
+svg_elements *svg_group_get_elements(svg_group *g)
+{
+  return g ? g->els : NULL;
+}
+
+  /**
+   * @fn void svg_transform_set_type(svg_transform *st, svg_transform_type type)
+   *
+   * @brief sets type of transform @p st
+   *
+   * @param st - pointer to existing @a svg_transform struct
+   * @param type - @ svg_transform_type value of type attribute
+   *
+   * @par Returns
+   *   Nothing.
+   */
+
+void svg_group_set_elements(svg_group *g, svg_elements *els)
+{
+  if (!g) return;
+  if (g->els) svg_elements_free(g->els);
+  g->els = NULL;
+  if (els) g->els = svg_elements_dup(els);
+}
+
+  /**
+   * @fn void svg_group_add(svg_group *g, svg_element *el)
+   *
+   * @brief adds @p el to the list of @a svg_elements in @p g
+   *
+   * @param g - pointer to existing @a svg_group struct
+   * @param el - pointer to @a svg_element struct
+   *
+   * @par Returns
+   *   Nothing.
+   */
+
+void svg_group_add(svg_group *g, svg_element *el)
+{
+  if (!g || !el) return;
+  if (!g->els) g->els = svg_elements_new();
+  svg_elements_add(g->els, el);
+}
+
+  /**
+   * @fn void svg_group_remove(svg_group *g, int index)
+   *
+   * @brief removes the @a svg_element at @p index from @p g
+   *
+   * @param g - pointer to existing @a svg_group struct
+   * @param index - index into list of elements in group
+   *
+   * @par Returns
+   *   Nothing.
+   */
+
+void svg_group_remove(svg_group *g, int index)
+{
+  if (!g) return;
+  if (!g->els) return;
+  if ((index < 0) || (index >= g->els->size)) return;
+  svg_elements_remove(g->els, index);
+}
+
+  /*
    *  transform and sub types
    */
 
@@ -5555,19 +5698,28 @@ static xml_element *element_to_xml(svg_element *el)
     case svg_element_type_link: xe = link_to_xml(el); break;
     case svg_element_type_image: xe = image_to_xml(el); break;
     case svg_element_type_marker: xe = marker_to_xml(el); break;
+    case svg_element_type_group: xe = group_to_xml(el); break;
 
     case svg_element_type_none:
     default:
       break;
   }
 
+  if (!xe) goto exit;
+
   as = xml_element_get_attributes(xe);
+  if (!as)
+  {
+    as = xml_attributes_new();
+    if (!as) goto exit;
+    xml_element_set_attributes(xe, as);
+    as = xml_element_get_attributes(xe);
+    if (!as) goto exit;
+  }
   
   id = svg_element_get_id(el);
   if (id)
   {
-    if (!as) as = xml_attributes_new();
-    if (!as) goto exit;
     a = xml_attribute_new();
     if (!a) goto exit;
     xml_attribute_set_name(a, "id");
@@ -5579,8 +5731,6 @@ static xml_element *element_to_xml(svg_element *el)
   class = svg_element_get_class(el);
   if (class)
   {
-    if (!as) as = xml_attributes_new();
-    if (!as) goto exit;
     a = xml_attribute_new();
     if (!a) goto exit;
     xml_attribute_set_name(a, "class");
@@ -5592,8 +5742,6 @@ static xml_element *element_to_xml(svg_element *el)
   transforms = svg_element_get_transforms(el);
   if (transforms)
   {
-    if (!as) as = xml_attributes_new();
-    if (!as) goto exit;
     a = xml_attribute_new();
     if (!a) goto exit;
     xml_attribute_set_name(a, "transform");
@@ -5606,8 +5754,6 @@ static xml_element *element_to_xml(svg_element *el)
   style = svg_element_get_style(el);
   if (style)
   {
-    if (!as) as = xml_attributes_new();
-    if (!as) goto exit;
     a = xml_attribute_new();
     if (!a) goto exit;
     xml_attribute_set_name(a, "style");
@@ -5618,7 +5764,6 @@ static xml_element *element_to_xml(svg_element *el)
   }
 
 exit:
-  //if (as) xml_attributes_free(as);
 
   return xe;
 }
@@ -6434,6 +6579,38 @@ exit:
   return xe;
 }
 
+static xml_element *group_to_xml(svg_element *el)
+{
+  xml_element *xe = NULL;
+  xml_elements *xes;
+  svg_group *g;
+
+  if (!el) goto exit;
+  if (el->type != svg_element_type_group) goto exit;
+
+  g = el->g;
+
+  xe = xml_element_new();
+  if (!xe) goto exit;
+
+  xml_element_set_type(xe, xml_element_type_container);
+  xml_element_set_name(xe, "g");
+
+  if (g->els)
+  {
+    xes = elements_to_xml(g->els);
+    if (xes)
+    {
+      xml_element_set_elements(xe, xes);
+      xml_elements_free(xes);
+    }
+  }
+
+exit:
+
+  return xe;
+}
+
 static xml_element *marker_to_xml(svg_element *el)
 {
   xml_element *xe = NULL;
@@ -7038,6 +7215,7 @@ static svg_element *parse_element(xml_element *e)
   else if (!strcmp(e->name, "link")) se = parse_link(e);
   else if (!strcmp(e->name, "image")) se = parse_image(e);
   else if (!strcmp(e->name, "marker")) se = parse_marker(e);
+  else if (!strcmp(e->name, "g")) se = parse_group(e);
 
   if (!se) goto exit;
 
@@ -7504,6 +7682,29 @@ static svg_element *parse_image(xml_element *e)
 
 exit:
   if (img) svg_image_free(img);
+
+  return se;
+}
+
+static svg_element *parse_group(xml_element *e)
+{
+  svg_element *se = NULL;
+  svg_group *g = NULL;
+
+  if (!e) goto exit;
+
+  se = svg_element_new();
+  if (!se) goto exit;
+
+  g = svg_group_new();
+  if (!g) goto exit;
+
+  g->els = parse_elements(e->elements);
+
+  svg_element_set_element(se, svg_element_type_group, g);
+
+exit:
+  if (g) svg_group_free(g);
 
   return se;
 }
