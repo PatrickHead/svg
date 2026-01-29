@@ -20,24 +20,29 @@ NOTE:  As of 2/20/2025, there is no reference code for creating an SVG document 
 <a id="introduction"></a>
 ## Introduction
 
-@b svg is a C language library that manages SVG documents.  @b svg is reasonably complete and compliant with W3C standards.  @b svg is NOT intended to be totally XML standards compliant.  @b SVG is for use in projects where reading and writing SVG documents in a lightweight and simple manner is desirable.
+**svg** is a C language library that manages SVG documents.  **svg** is reasonably complete and compliant with W3C standards.  **svg** is NOT intended to be completely XML standards compliant.  **svg** is for use in projects where reading and writing SVG documents in a lightweight and simple manner is desirable.
 
 [Back to Table of Contents](#TOC)
 
 <a id="installation"></a>
 ## Installation
 
-A reasonably modern version of GNU Autotools should be installed before installing @b xml from the source files.  At the time of writing this document, Autotools version 2.71 were used.
+A reasonably modern version of GNU Autotools should be installed before installing **svg** from the source files.  At the time of writing this document, **autotools** version 2.71 was used.
 
 To compile the source code, the standard build tools are required, such as GCC, binutils, make, etc.
 
 If you want to create the Doxygen API documentation, then of course Doxygen and friends need to installed.
 
-If you have obtained the @b svg source code from a GIT repository, then execute the `autoreconf` program while in the directory that the @b svg GIT clone is located.
+If you have obtained the **svg** source code from a GIT repository, then execute the `autoreconf` program while in the directory that the svg GIT clone is located.
 
-For both GIT clones and GNU Package tarballs, run the usual `./configure` followed by `make`.
+For both GIT clones and GNU Package tarballs, run the usual:
 
-To install the built **libsvg** library, run `sudo make install`.
+    `./configure`
+    `make`
+
+To install the built **libsvg** library, run:
+
+    `sudo make install`
 
 [Back to Table of Contents](#TOC)
 
@@ -54,7 +59,7 @@ To compile your code using libxml.a:
 <a id="known-issues-and-limitations"></a>
 ## Known issues and limitations
 
-At the time of writing of this document, there are no known issues with the @b svg software.
+At the time of writing of this document, there are no known issues with the **svg** software.
 
 [Back to Table of Contents](#TOC)
 
