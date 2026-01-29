@@ -1,4 +1,4 @@
-# libsvg - A simple Library for creating, editing, reading and writing SVG files.
+# libsvg - A library for creating, editing, reading and writing SVG files.
 
 A C language library primarily designed for creating and editing SVG documents programmatically.  This library provides an API in the same spirit as libxml2 or gtk+.
 
@@ -20,7 +20,7 @@ NOTE:  As of 2/20/2025, there is no reference code for creating an SVG document 
 <a id="introduction"></a>
 ## Introduction
 
-**svg** is a C language library that manages SVG documents.  **svg** is reasonably complete and compliant with W3C standards.  **svg** is NOT intended to be completely XML standards compliant.  **svg** is for use in projects where reading and writing SVG documents in a lightweight and simple manner is desirable.
+**svg** is a C language library that manages SVG documents.  **svg** is reasonably complete and compliant with W3C standards.  **svg** is NOT intended to be completely XML standards compliant.  **svg** is for use in projects where reading and writing SVG documents in a lightweight and basic manner is desirable.
 
 [Back to Table of Contents](#TOC)
 
